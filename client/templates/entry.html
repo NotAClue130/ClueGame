@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block css %}
+  <link rel="stylesheet" href="../static/styles/home.css">
+{% endblock %}
+
+{% block content %}
+<button type="button" class="btn btn-success btn-lg" 
+onclick="window.location.href = '{{ url_for('main.home')}}'">Play</button>
+{% endblock %}

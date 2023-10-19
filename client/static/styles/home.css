@@ -1,0 +1,13 @@
+body{
+    background-image: url('../images/homeWallpaper.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+
+}
+
+button {
+    position: fixed;
+    left: 50%;
+    top:50%;
+  }
