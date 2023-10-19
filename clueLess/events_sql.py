@@ -11,13 +11,14 @@ from .extensions import socketio
 
 # This will base the events on database
 from sql import *
+from sql import *
 import pymysql
-db = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='database', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user='root', password='lc20011214', db='NotAClue', charset='utf8')
 
 # This will maintain the users that are in the game. as well as the characters they
 # selected.  We can move these to a relational database per Yang's requirements spec.
-create_table_users(db)
-create_table_characters(db)
+SQL_create_table_users(db)
+SQL_create_table_characters(db)
 
 # This connection function is from the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 @socketio.on("connect")
@@ -28,12 +29,12 @@ def handle_connect():
 # note that the game.html enforces that the user name is nonempty
 @socketio.on("user_join")
 def handle_user_join(username):
-    insert_table_users(db, username, request.sid)
+    SQL_handle_user_join(db, request.sid, username)
     emit("player_joined", broadcast=True)
 
     # if a new player joins, we need to refresh their screen with all the users that have
     # previously made selections
-    for character, username in query_table_characters(db):
+    for character, username in SQL_get_characters_and_usernames(db):
         emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
 
@@ -43,10 +44,10 @@ def handle_user_join(username):
 def handle_player_select(character):
     # "playerName" is synonymous with "character"
     # find the username, this is a bad way to go about it
-    username = query_table_users_on_sid(request.sid)
-    character_username_list = query_table_characters(db)
-    characters = [i[0] for i in character_username_list]
-    usernames = [i[1] for i in character_username_list]
+    username = SQL_get_username_based_on_sid(request.sid)
+    characters_and_usernames = SQL_get_characters_and_usernames(db)
+    characters = [i[0] for i in characters_and_usernames]
+    usernames = [i[1] for i in characters_and_usernames]
 
     # check to make sure another player hasnt chosen this character
     if character in characters:
@@ -54,11 +55,11 @@ def handle_player_select(character):
 
     # if a player is switching their character
     if username in usernames:
-        oldCharacter = query_table_characters_on_username(db, username)
-        delete_table_characters_on_username(db, username)
-        emit("playerChoice", {"player":oldCharacter, "username": ""}, broadcast=True)
+        character_old = SQL_get_character_based_on_username(db, username)
+        SQL_delete_character_based_on_charactername(db, character_old)
+        emit("playerChoice", {"player": character_old, "username": ""}, broadcast=True)
 
-    insert_table_characters(character, username)
+    SQL_handle_player_select(character, request.sid)
     emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
 # This function starts the game!

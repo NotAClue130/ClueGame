@@ -1,35 +1,29 @@
 import pymysql
-import cryptography
 
-
-def create_table_users(db):
+def SQL_create_table_users(db):
     cursor = db.cursor()
     sql = """
-    CREATE TABLE Users
-(
-    username text,
-    sid integer,
-    PRIMARY KEY (username)
-)
+   CREATE TABLE `NotAClue`.`Users` (
+  `SID` INT NOT NULL,
+  `username` VARCHAR(45) NULL,
+  PRIMARY KEY (`SID`));
     """
     cursor.execute(sql)
     db.commit()
-    db.close()
     return 0
 
 
-def create_table_characters(db):
+def SQL_create_table_characters(db):
     cursor = db.cursor()
     sql = """
-    CREATE TABLE Characters
-(
-    character text,
-    username text,
-    action text,
-    status text,
-    card text,
-    PRIMARY KEY (character)
-)
+    CREATE TABLE `NotAClue`.`Characters` (
+    `character` VARCHAR(45) NOT NULL,
+    `SID` INT NULL,
+    PRIMARY KEY (`character`),
+    FOREIGN KEY (`SID`)
+    REFERENCES `NotAClue`.`Users` (`SID`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION);
         """
     cursor.execute(sql)
     db.commit()
@@ -37,76 +31,88 @@ def create_table_characters(db):
     return 0
 
 
-def insert_table_users(db, username, sid):
+def SQL_handle_user_join(db, sid, username):
     cursor = db.cursor()
     sql = """
-    INSERT INTO Users (
-	username, sid)
-	VALUES (%s, %s);
+    INSERT INTO `NotAClue`.`Users`
+    (`SID`,
+    `username`)
+    VALUES
+    (%s, 
+    %s);
     """
-    cursor.execute(sql, (username, sid))
+    cursor.execute(sql, (sid, username))
     db.commit()
-    db.close()
     return 0
 
 
-def query_table_characters(db):
+def SQL_get_characters_and_usernames(db):
     cursor = db.cursor()
     sql = """
-    SELECT
-    character, username, action, status, card
-    FROM
-    Characters
+    SELECT a.`character`,
+           b.`username`
+    FROM `NotAClue`.`Characters` AS  a
+		LEFT JOIN `NotAClue`.`Users` AS b 
+        ON a.SID = b.SID;
+        
     """
     cursor.execute(sql)
     res = cursor.fetchall()
     return res
 
 
-def query_table_users_on_sid(db, sid):
+def SQL_get_username_based_on_sid(db, sid):
     cursor = db.cursor()
     sql = """
     SELECT username
-	FROM Users
-	WHERE sid=%s
+	FROM NotAClue.Users
+	WHERE sid=%s;
     """
-    cursor.execute(sql)
-    res = cursor.fetchall()[0][0]
-    return res
+    cursor.execute(sql,(sid,))
+    res = cursor.fetchall()
+    if res:
+        return res[0][0]
+    return None
 
 
-def insert_table_characters(db, character, username):
+def SQL_handle_player_select(db, character, sid):
     cursor = db.cursor()
     sql = """
-    INSERT INTO Characters(
-	character, username)
-	VALUES (%s, %s);
+    INSERT INTO `NotAClue`.`Characters`
+    (`character`,
+    `SID`)
+    VALUES
+    (%s,
+    %s);
         """
-    cursor.execute(sql, (character, username))
+    cursor.execute(sql, (character, sid))
     db.commit()
-    db.close()
     return 0
 
 
-def query_table_characters_on_username(db, username):
+def SQL_get_character_based_on_username(db, username):
     cursor = db.cursor()
     sql = """
-    SELECT character
-	FROM Characters
-	WHERE username=%s
+    SELECT a.`character`
+    FROM `NotAClue`.`Characters` AS  a
+		LEFT JOIN `NotAClue`.`Users` AS b 
+        ON a.SID = b.SID
+    WHERE b.username=%s;
             """
     cursor.execute(sql, (username,))
-    res = cursor.fetchall()[0][0]
-    return res
+    res = cursor.fetchall()
+    if res:
+        return res[0][0]
+    return None
 
 
-def delete_table_characters_on_username(db, username):
+def SQL_delete_character_based_on_charactername(db, charactername):
     cursor = db.cursor()
     sql = """
-        DELETE FROM Characters
-        WHERE username=%s
+    DELETE FROM `NotAClue`.`Characters` as a
+    WHERE a.character = %s;
             """
-    cursor.execute(sql, (username,))
+    cursor.execute(sql, (charactername,))
     db.commit()
-    db.close()
     return 0
+
