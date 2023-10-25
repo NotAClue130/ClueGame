@@ -1,0 +1,4 @@
+dbAccount.py
+.DS_Store
+__pycache__
+flaskEnv

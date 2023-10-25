@@ -1,10 +1,28 @@
 import pymysql
 
+def SQL_refresh_database(db):
+    # delete existing tables
+    cursor = db.cursor()
+    sql = """
+DROP TABLE IF EXISTS Characters, Users;
+    """
+    print(sql)
+    cursor.execute(sql)
+    db.commit()
+  
+    # then recreate the tables
+    SQL_create_table_users(db)
+    SQL_create_table_characters(db)
+  
+    return 0
+
+
+
 def SQL_create_table_users(db):
     cursor = db.cursor()
     sql = """
    CREATE TABLE `NotAClue`.`Users` (
-  `SID` INT NOT NULL,
+  `SID` varchar(255),
   `username` VARCHAR(45) NULL,
   PRIMARY KEY (`SID`));
     """
@@ -18,7 +36,7 @@ def SQL_create_table_characters(db):
     sql = """
     CREATE TABLE `NotAClue`.`Characters` (
     `character` VARCHAR(45) NOT NULL,
-    `SID` INT NULL,
+    `SID` varchar(255),
     PRIMARY KEY (`character`),
     FOREIGN KEY (`SID`)
     REFERENCES `NotAClue`.`Users` (`SID`)
