@@ -23,6 +23,7 @@ Get Started:
 1. Start the MySQL service on your computer
 On the terminal of your computer, namely CLI (command line interface), run the following command line:
 mysql -u root -p
+(Note that the user on your computer to start the MySQL service might not be "root")
 (Then you need to enter your username and password on MySQL database)
 2. Start the ClueLess Flask App
 On the terminal of your computer, run the following command line to go to the directory of our project file.
