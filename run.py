@@ -5,6 +5,10 @@
 # from clueLess import create_app, socketio
 
 from client import create_app, socketio
+from backend.Deck import Deck
+from backend.Card import Card
+from backend.Game import Game
+
 from dbAccount import usr, pwd
 
 # This will base the events on database
@@ -18,6 +22,11 @@ SQL_refresh_database(db)
 
 # then create the app
 app = create_app()
+
+
+
+g = Game()
+
 
 # run the game!
 try:
