@@ -5,14 +5,14 @@
 # from clueLess import create_app, socketio
 
 from client import create_app, socketio
-# from dbAccount import*
+from dbAccount import usr, pwd
 
 # This will base the events on database
 from client.sql import *
 import pymysql
 
 # first connect to the database
-db = pymysql.connect(host='localhost', port=3306, user="root", password="lc20011214", db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
 
 SQL_refresh_database(db)
 
