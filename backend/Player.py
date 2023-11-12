@@ -6,6 +6,7 @@ from backend.Card import Card
 
 class Player:
     def __init__(self, id, characterId, name, roomId, hand):
+        self.name=name
         self.id = id  #unique player id
         self.characterId = characterId  #unique character id
         self.roomId = roomId  #unqiue room id 

@@ -23,10 +23,7 @@ SQL_refresh_database(db)
 # then create the app
 app = create_app()
 
-
-
-g = Game()
-
+game_global = Game()
 
 # run the game!
 try:

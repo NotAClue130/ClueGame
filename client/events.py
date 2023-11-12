@@ -2,6 +2,10 @@
 # This script holds all the flask events that we will use
 # to update the webpage
 
+# Chuan Lin: I am sorry that I don't know how to get the game_global instance created in run.py
+from ..run import game_global
+from ...backend.Character import mapping_from_character_to_locations
+
 from flask import request
 from flask_socketio import emit
 
@@ -13,6 +17,8 @@ from .extensions import socketio
 from .sql import *
 import pymysql
 from dbAccount import*
+
+
 
 
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
@@ -40,12 +46,10 @@ def handle_user_join(username):
 @socketio.on("player_select")
 def handle_player_select(character):
     # "playerName" is synonymous with "character"
-    # find the username, this is a bad way to go about it
     username = SQL_get_username_based_on_sid(db, request.sid)
     characters_and_usernames = SQL_get_characters_and_usernames(db)
     characters = [i[0] for i in characters_and_usernames]
     usernames = [i[1] for i in characters_and_usernames]
-
     # check to make sure another player hasnt chosen this character
     if character in characters:
         return
@@ -58,6 +62,10 @@ def handle_player_select(character):
 
     SQL_handle_player_select(db, character, request.sid)
     emit("playerChoice", {"player": character, "username": username}, broadcast=True)
+
+    player=game_global.get_player_object_based_on_player_name(username)
+    character_object=game_global.characters[player.characterId]
+    character_object.startingLocation=mapping_from_character_to_locations[character]
 
 # This function starts the game!
 @socketio.on("game_start")
