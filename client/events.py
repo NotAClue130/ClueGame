@@ -8,6 +8,8 @@ from ...backend.Character import mapping_from_character_to_locations
 
 from flask import request
 from flask_socketio import emit
+from Board import *
+from Player import *
 
 # we will add all the events onto this object, then import
 # this in init
@@ -19,9 +21,8 @@ import pymysql
 from dbAccount import*
 
 
-
-
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
+board = Gameboard()
 
 # This connection function is from the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 @socketio.on("connect")
@@ -46,10 +47,12 @@ def handle_user_join(username):
 @socketio.on("player_select")
 def handle_player_select(character):
     # "playerName" is synonymous with "character"
+    # find the username, this is a bad way to go about it
     username = SQL_get_username_based_on_sid(db, request.sid)
     characters_and_usernames = SQL_get_characters_and_usernames(db)
     characters = [i[0] for i in characters_and_usernames]
     usernames = [i[1] for i in characters_and_usernames]
+
     # check to make sure another player hasnt chosen this character
     if character in characters:
         return
@@ -71,3 +74,15 @@ def handle_player_select(character):
 @socketio.on("game_start")
 def handle_game_start():
     emit("start_game", broadcast=True)
+    board.createLayout()
+
+# Handles when a player chooses a room
+def handle_player_room_choose(player: Player, newRoomId):
+    currRoom = board.get_room_by_id(player.roomId)
+    newRoom = board.get_room_by_id(newRoomId)
+    newRoomChoices = board.layout[currRoom]
+    if(newRoom in newRoomChoices):
+        player.move(newRoomId)
+    else:
+        raise ValueError("You must choose a location that is adjacent to you (unless you can take a secret passage)")
+    
