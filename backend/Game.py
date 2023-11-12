@@ -3,6 +3,7 @@
 # This class defines a game object for clue less
 from backend.Card import Card
 from backend.Deck import Deck
+from backend.Board import Gameboard, Room
 
 
 class Game:

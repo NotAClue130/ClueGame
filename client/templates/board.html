@@ -6,7 +6,16 @@
 {% block content %}
     
         <div class=".col-md-9">
-            <img class="h-100" src="../static/images/GameBoard.png" />
+            <img class="h-100" src="../static/images/GameBoard.png" id="board" style="height: 795; width: 795;"/>
+            <script>      
+                const socket = io();
+                document.getElementById("board").addEventListener("click", getMousePos, true)
+                function getMousePos(e) {
+                    var cursorX = e.pageX;
+                    var cursorY = e.pageY;
+                    socket.emit("room_select", cursorX, cursorY)
+                }
+            </script>
         </div>
     
         <div class=".col-md-3 table-list">
