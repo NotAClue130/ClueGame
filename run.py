@@ -2,10 +2,14 @@
 
 # first import our game from the clueless package
 
-#from clueLess import create_app, socketio
+# from clueLess import create_app, socketio
 
 from client import create_app, socketio
-from dbAccount import*
+from backend.Deck import Deck
+from backend.Card import Card
+from backend.Game import Game
+
+from dbAccount import usr, pwd
 
 # This will base the events on database
 from client.sql import *
@@ -16,10 +20,13 @@ db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='No
 
 SQL_refresh_database(db)
 
-
 # then create the app
 app = create_app()
 
-# run the game!
-socketio.run(app, host=('0.0.0.0'))
+game_global = Game()
 
+# run the game!
+try:
+    socketio.run(app, host=('0.0.0.0'))
+except:
+    socketio.run(app, host=('0.0.0.0'), allow_unsafe_werkzeug=True)
