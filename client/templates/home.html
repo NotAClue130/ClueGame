@@ -190,7 +190,7 @@
                 <h4 class="my-0 fw-normal">Mrs Scarlet</h4>
               </div>
               <div class="card-body Scarlet">
-                <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/MrsScarlet.png">
+                <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/MissScarlet.png">
                 <button type="button" id="scarlet-btn" class="w-100 btn btn-lg btn-outline-primary Scarlet-select" onclick="selectedCharacter('Scarlet')">Select</button>
                 <input type="text" class="w-50" id="scarlet" value="" name="input1">
               </div>
@@ -248,6 +248,10 @@
         socket.emit("character", character); 
         }
 
+        function joinedCharacter(){
+          socket.emit("game_start")
+        }
+
         socket.on("character", function (character) {
         const button = document.querySelector("." + character + "-select");
         const cardBody = document.querySelector(".card-body." + character);
@@ -300,22 +304,22 @@
  Can this be condensed?
   */        
          document.getElementById("green-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "green");
+             socket.emit("player_select", "MrGreen");
          })
          document.getElementById("mustard-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "mustard");
+             socket.emit("player_select", "ColMustard");
          })
          document.getElementById("plum-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "plum");
+             socket.emit("player_select", "ProfPlum");
          })
          document.getElementById("peacock-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "peacock");
+             socket.emit("player_select", "MrsPeacock");
          })
          document.getElementById("scarlet-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "scarlet");
+             socket.emit("player_select", "MissScarlet");
          })
          document.getElementById("white-btn").addEventListener("click", function(event) {
-             socket.emit("player_select", "white");
+             socket.emit("player_select", "MrsWhite");
          })
  
          socket.on("playerChoice", function(data) {
@@ -345,7 +349,6 @@
              document.getElementById("landing").style.display = "none";
              document.getElementById("gameInProgress").style.display = "block";
          })
- 
      </script>
  
  </body>

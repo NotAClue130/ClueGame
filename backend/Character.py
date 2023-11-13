@@ -2,20 +2,20 @@ class Character:
     instances_count = 0
     instances_database = []
     mapping_from_character_to_locations = {
-        "Miss Scarlet": "HallLounge",
-        "Prof Plum": "StudyLibrary",
-        "Col Mustard": "LoungeDining",
-        "Mrs Peacock": "LibraryConservatory",
-        "Mr Green": "ConservatoryBall",
-        "Mrs White": "BallKitchen"
+        "MissScarlet": "HallLounge",
+        "ProfPlum": "StudyLibrary",
+        "ColMustard": "LoungeDining",
+        "MrsPeacock": "LibraryConservatory",
+        "MrGreen": "ConservatoryBall",
+        "MrsWhite": "BallKitchen"
     }
     mapping_from_character_to_boolean = {
-        "Miss Scarlet": False,
-        "Prof Plum": False,
-        "Col Mustard": False,
-        "Mrs Peacock": False,
-        "Mr Green": False,
-        "Mrs White": False
+        "MissScarlet": False,
+        "ProfPlum": False,
+        "ColMustard": False,
+        "MrsPeacock": False,
+        "MrGreen": False,
+        "MrsWhite": False
     }
 
     def __init__(self, id: int, name: str, icon: str):
@@ -65,6 +65,7 @@ class Character:
     @classmethod
     def checkCharaterName(cls, characterName):
         if characterName not in cls.mapping_from_character_to_boolean:
+            print(characterName)
             raise ValueError("This character doesn't belong to clue game!!")
         if cls.mapping_from_character_to_boolean[characterName]:
             raise ValueError("This character is already taken up by other users!!")

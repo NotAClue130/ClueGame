@@ -2,25 +2,30 @@
 # 11/11/2023
 # This class defines a Player object for clue less
 
+from backend.Board import Gameboard
 from backend.Card import Card
 
 class Player:
     instances_count = 0
     instances_database = []
-    def __init__(self, id, characterId, name, roomId, hand):
+    def __init__(self, id, characterId, characterName, name, roomId, room, hand):
         Player.checkIdUniqueness(id)
         self.name=name
         self.id = id  #unique player id
         self.characterId = characterId  #unique character id
+        self.characterName = characterName
         self.roomId = roomId  #unqiue room id 
+        self.room = room
         self.hand = hand  # List of Card objects
         Player.instances_database.append(self)
+        print(Player.instances_database)
         Player.instances_count += 1
 
-    def move(self, new_roomId):
+    def move(self, new_room):
         # Before calling this method, need to check if the room id is valid 
         # Update the roomId if the move is valid
-        self.roomId = new_roomId
+        self.roomId = new_room.id
+        self.room = new_room
 
     def makeSuggestion(self, roomId, suggested_cards):
         # This method return a list of Card objects representing the suggestion
@@ -56,8 +61,7 @@ class Player:
     @classmethod
     def getInstanceById(cls, instance_id):
         res = None
-        for instance_each in cls.instances_database:
-            print(instance_each.id)
+        for instance_each in Player.instances_database:
             if instance_each.id == instance_id:
                 res = instance_each
         return res
@@ -80,3 +84,10 @@ class Player:
         if not res:
             raise ValueError("The id already exists!")
 
+    @classmethod
+    def gethtmlLocal(cls, room):
+        x = room.htmlLocation[0]
+        y = room.htmlLocation[1]
+        middlex = (x[0] + x[1])/2
+        middley = (y[0] + y[1])/2
+        return (str(middlex) + "px, " + str(middley) + "px")
