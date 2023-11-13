@@ -6,11 +6,12 @@
 # from run import game_global
 # from backend.Character import mapping_from_character_to_locations
 
-from flask import request
+from flask import request, session
 from flask_socketio import emit
 from backend.Board import *
 from backend.Player import *
 from backend.Character import *
+import uuid
 
 # we will add all the events onto this object, then import
 # this in init
@@ -33,7 +34,7 @@ def handle_connect():
 # note that the game.html enforces that the user name is nonempty
 @socketio.on("user_join")
 def handle_user_join(username):
-    SQL_handle_user_join(db, request.sid, username)
+    SQL_handle_user_join(db, session["id"], username)
     emit("player_joined", broadcast=True)
 
     # if a new player joins, we need to refresh their screen with all the users that have
@@ -47,7 +48,8 @@ def handle_user_join(username):
 def handle_player_select(character):
     # "playerName" is synonymous with "character"
     # find the username, this is a bad way to go about it
-    username = SQL_get_username_based_on_sid(db, request.sid)
+    print("PLAYERSELECT: ", session["id"])
+    username = SQL_get_username_based_on_sid(db, session["id"])
     characters_and_usernames = SQL_get_characters_and_usernames(db)
     characters = [i[0] for i in characters_and_usernames]
     usernames = [i[1] for i in characters_and_usernames]
@@ -62,12 +64,12 @@ def handle_player_select(character):
         SQL_delete_character_based_on_charactername(db, character_old)
         emit("playerChoice", {"player": character_old, "username": ""}, broadcast=True)
 
-    SQL_handle_player_select(db, character, request.sid)
+    SQL_handle_player_select(db, character, session["id"])
     emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
     # set the characterId field and position field for the player object
     # note that we assume that <<<<<<<request.id==player.id>>>>>>>>
-    player_id=request.sid
+    player_id=session["id"]
     player_object=Player.getInstanceById(player_id)
 
     character_object=Character(None,character,"icon")
@@ -104,14 +106,11 @@ def room_selected(x, y):
 def handle_character(character):
     emit("character", character, broadcast=True)
 
-@socketio.on("SID")
-def changeSid():
-    Player.instances_database[Player.instances_count - 1].id = request.sid
 
 # Handles when a player chooses a room
 # TODO: Get current player and make function def handle_player_room_choose(player: Player, newRoomId)
 def handle_player_room_choose(room: str):
-    player = Player.getInstanceById(request.sid)
+    player = Player.getInstanceById(session["id"])
     currRoom = board.get_room_by_id(player.room.id)
     newRoom = board.get_room_by_name(room)
     if(currRoom.name in board.rooms):
