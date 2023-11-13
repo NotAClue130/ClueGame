@@ -1,8 +1,40 @@
 class Room:
+    instances_count = 0
+    instances_database = []
     def __init__(self, Id: int, isHallway: bool, location: str):
+        Room.checkIdUniqueness(id)
         self.Id = Id
         self.isHallway = isHallway
         self.location = location
+        Room.instances_database.append(self)
+        Room.instances_count += 1
+
+    @classmethod
+    def getInstanceById(cls, instance_id):
+        res = None
+        for instance_each in cls.instances_database:
+            print(instance_each.id)
+            if instance_each.id == instance_id:
+                res = instance_each
+        return res
+
+    @classmethod
+    def getInstancesDatabase(cls):
+        return cls.instances_database
+
+    @classmethod
+    def getInstancesCount(cls):
+        return cls.instances_count
+
+    @classmethod
+    def checkIdUniqueness(cls, id_for_check):
+        res = True
+        for instance_each in cls.instances_database:
+            if instance_each.id == id_for_check:
+                res = False
+                break
+        if not res:
+            raise ValueError("The id already exists!")
 
 
 class Gameboard:
