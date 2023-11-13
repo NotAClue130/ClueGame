@@ -21,7 +21,6 @@ from .sql import *
 import pymysql
 from client.dbAccount import*
 
-
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
 board = Gameboard()
 
@@ -121,6 +120,5 @@ def handle_player_room_choose(room: str):
         newRoomChoices = board.hallLayout[currRoom]
     if(newRoom in newRoomChoices):
         player.move(newRoom)
-        print(player.room.name)
     else:
         raise ValueError("You must choose a location that is adjacent to you (unless you can take a secret passage)")

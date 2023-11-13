@@ -1,10 +1,8 @@
 # This routes function follows the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 # it initializes the website according to the template, game.html
 
-from flask import Blueprint, render_template, request
-from .events import changeSid
+from flask import Blueprint, render_template, jsonify
 from backend.Player import Player
-from backend.Board import Gameboard
 
 
 main = Blueprint("main", __name__)
@@ -21,3 +19,11 @@ def home():
 def board():
     return render_template("board.html", instances = Player.instances_database)
 
+@main.route("/move", methods=["GET"])
+def move():
+    data = {}
+    playerIds = []
+    for player in Player.instances_database:
+        data[str(player.id)] = {"character": player.characterName, "htmlLocal": player.gethtmlLocal(player.room)}
+        playerIds.append(player.id)
+    return jsonify(data, playerIds)
