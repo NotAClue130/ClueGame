@@ -5,12 +5,18 @@
 from backend.Card import Card
 
 class Player:
+    instances_count = 0
+    instances_database = []
     def __init__(self, id, characterId, name, roomId, hand):
+        if not Player.checkIdUniqueness(id):
+            raise ValueError("The id already exists!")
         self.name=name
         self.id = id  #unique player id
         self.characterId = characterId  #unique character id
         self.roomId = roomId  #unqiue room id 
         self.hand = hand  # List of Card objects
+        Player.instances_database.append(self)
+        Player.instances_count += 1
 
     def move(self, new_roomId):
         # Before calling this method, need to check if the room id is valid 
@@ -47,4 +53,29 @@ class Player:
             raise ValueError("All card types must be different for a suggestion.")
 
         return accusation_cards
+
+    @classmethod
+    def getInstanceById(cls, instance_id):
+        res = None
+        for instance_each in cls.instances_database:
+            print(instance_each.id)
+            if instance_each.id == instance_id:
+                res = instance_each
+        return res
+
+    @classmethod
+    def getInstancesDatabase(cls):
+        return cls.instances_database
+
+    @classmethod
+    def getInstancesCount(cls):
+        return cls.instances_count
+
+    @classmethod
+    def checkIdUniqueness(cls, id_for_check):
+        res = True
+        for instance_each in cls.instances_database:
+            if instance_each.id == id_for_check:
+                res = False
+        return res
 
