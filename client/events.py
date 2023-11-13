@@ -10,6 +10,7 @@ from flask import request
 from flask_socketio import emit
 from backend.Board import *
 from backend.Player import *
+from backend.Character import *
 
 # we will add all the events onto this object, then import
 # this in init
@@ -65,9 +66,21 @@ def handle_player_select(character):
     SQL_handle_player_select(db, character, request.sid)
     emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
-    # player=game_global.get_player_object_based_on_player_name(username)
-    # character_object=game_global.characters[player.characterId]
-    # character_object.startingLocation=mapping_from_character_to_locations[character]
+    # set the characterId field and position field for the player object
+    # note that we assume that <<<<<<<request.id==player.id>>>>>>>>
+    player_id=request.sid
+    player_object=Player.getInstanceById(player_id)
+
+    character_object=Character(None,character,"icon")
+    player_object.characterId=character_object.id
+
+    roomName=character_object.location
+    room_object=Room.getInstanceByName(roomName)
+    player_object.roomId=room_object.id
+
+
+
+
 
 # This function starts the game!
 @socketio.on("game_start")

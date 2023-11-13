@@ -34,8 +34,15 @@ class Room:
     def getInstanceById(cls, instance_id):
         res = None
         for instance_each in cls.instances_database:
-            print(instance_each.id)
             if instance_each.id == instance_id:
+                res = instance_each
+        return res
+
+    @classmethod
+    def getInstanceByName(cls,instance_name):
+        res = None
+        for instance_each in cls.instances_database:
+            if instance_each.name == instance_name:
                 res = instance_each
         return res
 
@@ -56,6 +63,7 @@ class Room:
                 break
         if not res:
             raise ValueError("The id already exists!")
+
 
 
 class Gameboard:

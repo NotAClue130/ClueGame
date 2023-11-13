@@ -29,12 +29,12 @@ class Game:
         self.solution = dealt_cards["solution"]
 
         # set the player hands
-        for i1 in range(numPlayers):
-            self.players[i1].hand = dealt_cards[i1]
+        for i in range(numPlayers):
+            self.players[i].hand = dealt_cards[i]
 
-        # initialize each player
-        for i1 in range(numPlayers):
-            self.players[i1].characterId = self.characters[i1].id
+        # # initialize each player
+        # for i in range(numPlayers):
+        #     self.players[i].characterId = self.characters[i].id
 
     # this method will execute a turn for a player object
     def turn(self, player):

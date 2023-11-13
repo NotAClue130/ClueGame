@@ -1,14 +1,13 @@
-
 class Character:
     instances_count = 0
     instances_database = []
     mapping_from_character_to_locations = {
-        "Miss Scarlet": (0, 3),
-        "Prof Plum": (1, 0),
-        "Col Mustard": (1, 4),
-        "Mrs Peacock": (3, 0),
-        "Mr Green": (4, 1),
-        "Mrs White": (4, 3)
+        "Miss Scarlet": "HallLounge",
+        "Prof Plum": "StudyLibrary",
+        "Col Mustard": "LoungeDining",
+        "Mrs Peacock": "LibraryConservatory",
+        "Mr Green": "ConservatoryBall",
+        "Mrs White": "BallKitchen"
     }
     mapping_from_character_to_boolean = {
         "Miss Scarlet": False,
@@ -19,14 +18,16 @@ class Character:
         "Mrs White": False
     }
 
-    def __init__(self,id,name):
+    def __init__(self, id: int, name: str, icon: str):
+        if id == None:
+            id = Character.getInstancesCount()
         Character.checkIdUniqueness(id)
         Character.checkCharaterName(name)
-        self.id=id
-        # self.startingLocation
-        # self.icon
-        self.name=name
-        Character.mapping_from_character_to_boolean[name]=True
+        self.id = id
+        self.location = Character.mapping_from_character_to_locations[name]
+        self.icon = icon
+        self.name = name
+        Character.mapping_from_character_to_boolean[name] = True
         Character.instances_database.append(self)
         Character.instances_count += 1
 
@@ -38,9 +39,9 @@ class Character:
     def getInstanceById(cls, instance_id):
         res = None
         for instance_each in cls.instances_database:
-            print(instance_each.id)
             if instance_each.id == instance_id:
                 res = instance_each
+                break
         return res
 
     @classmethod
@@ -67,4 +68,3 @@ class Character:
             raise ValueError("This character doesn't belong to clue game!!")
         if cls.mapping_from_character_to_boolean[characterName]:
             raise ValueError("This character is already taken up by other users!!")
-
