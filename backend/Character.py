@@ -3,20 +3,30 @@ class Character:
     instances_count = 0
     instances_database = []
     mapping_from_character_to_locations = {
-        "Miis Scarlet": (0, 3),
+        "Miss Scarlet": (0, 3),
         "Prof Plum": (1, 0),
         "Col Mustard": (1, 4),
         "Mrs Peacock": (3, 0),
         "Mr Green": (4, 1),
         "Mrs White": (4, 3)
     }
-    def __init__(self,id,startingLocation,icon,name):
-        if not Character.checkIdUniqueness(id):
-            raise ValueError("The id already exists!")
+    mapping_from_character_to_boolean = {
+        "Miss Scarlet": False,
+        "Prof Plum": False,
+        "Col Mustard": False,
+        "Mrs Peacock": False,
+        "Mr Green": False,
+        "Mrs White": False
+    }
+
+    def __init__(self,id,name):
+        Character.checkIdUniqueness(id)
+        Character.checkCharaterName(name)
         self.id=id
-        self.startingLocation=startingLocation
-        self.icon=icon
+        # self.startingLocation
+        # self.icon
         self.name=name
+        Character.mapping_from_character_to_boolean[name]=True
         Character.instances_database.append(self)
         Character.instances_count += 1
 
@@ -47,4 +57,14 @@ class Character:
         for instance_each in cls.instances_database:
             if instance_each.id == id_for_check:
                 res = False
-        return res
+                break
+        if not res:
+            raise ValueError("The id already exists!")
+
+    @classmethod
+    def checkCharaterName(cls, characterName):
+        if characterName not in cls.mapping_from_character_to_boolean:
+            raise ValueError("This character doesn't belong to clue game!!")
+        if cls.mapping_from_character_to_boolean[characterName]:
+            raise ValueError("This character is already taken up by other users!!")
+

@@ -8,8 +8,7 @@ class Player:
     instances_count = 0
     instances_database = []
     def __init__(self, id, characterId, name, roomId, hand):
-        if not Player.checkIdUniqueness(id):
-            raise ValueError("The id already exists!")
+        Player.checkIdUniqueness(id)
         self.name=name
         self.id = id  #unique player id
         self.characterId = characterId  #unique character id
@@ -77,5 +76,7 @@ class Player:
         for instance_each in cls.instances_database:
             if instance_each.id == id_for_check:
                 res = False
-        return res
+                break
+        if not res:
+            raise ValueError("The id already exists!")
 

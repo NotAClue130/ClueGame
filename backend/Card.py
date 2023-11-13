@@ -6,8 +6,7 @@ class Card:
     instances_count = 0
     instances_database = []
     def __init__(self, id, type, name):
-        if not Card.checkIdUniqueness(id):
-            raise ValueError("The id already exists!")
+        Card.checkIdUniqueness(id)
         self.name = name  # e.g. Mr Green, candlestick,
         self.type = type  # 'room', 'person', 'weapon'
         self.id = id  # unique ID. This should not be changed
@@ -48,4 +47,6 @@ class Card:
         for instance_each in cls.instances_database:
             if instance_each.id == id_for_check:
                 res = False
-        return res
+                break
+        if not res:
+            raise ValueError("The id already exists!")
