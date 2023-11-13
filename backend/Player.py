@@ -18,7 +18,6 @@ class Player:
         self.room = room
         self.hand = hand  # List of Card objects
         Player.instances_database.append(self)
-        print(Player.instances_database)
         Player.instances_count += 1
 
     def move(self, new_room):
