@@ -18,7 +18,7 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from dbAccount import*
+from client.dbAccount import*
 
 
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
@@ -82,6 +82,11 @@ def room_selected(x, y):
         ValueError("Choose a room, hallway, or secret passage please")
     else:
         handle_player_room_choose(location)
+
+
+@socketio.on("character")
+def handle_character(character):
+    emit("character", character, broadcast=True)
 
 # Handles when a player chooses a room
 # TODO: Get current player and make function def handle_player_room_choose(player: Player, newRoomId)

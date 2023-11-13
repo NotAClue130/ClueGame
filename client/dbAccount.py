@@ -3,9 +3,9 @@
 # Please don't push this file
 
 # Please enter the variable usr the username to log in the MySQL database on your computer.
-usr = None
+usr = "root"
 # Please enter the variable pwd the password to log in the MySQL database on your computer.
-pwd = None
+pwd = "albert123"
 
 assert usr is not None, "You have not changed the value of the variable usr"
 assert pwd is not None, "You have not changed the value of the variable pwd"
