@@ -7,12 +7,13 @@ class Room:
                      "BallKitchen"]
     mapping_from_name_to_boolean = {name: False for name in room_names + hallway_names}
 
-    def __init__(self, Id: int, isHallway: bool, name: str):
+    def __init__(self, id: int, isHallway: bool, htmlLocation, name: str):
         Room.checkName(name)
         Room.checkIdUniqueness(id)
-        self.Id = Id
+        self.id = id
         self.isHallway = isHallway
         self.name = name
+        self.htmlLocation = htmlLocation
         # Hi David, I believe that "name" is a better name for this attribute than "location", because it is a string
         # What is more, consider that we have function get_room_by_name
         Room.instances_database.append(self)
@@ -73,10 +74,6 @@ class Gameboard:
         hallway_names = ["StudyHall", "HallLounge", "StudyLibrary", "HallBilliard", "LoungeDining", "LibraryBilliard",
                          "BilliardDining", "LibraryConservatory", "BilliardBall", "DiningKitchen", "ConservatoryBall",
                          "BallKitchen"]
-        # We follow the rule of "from left to right, from up to below" to give hallway their names
-        # For example, the hallway between Hall and Billiary should be "HallBilliard", not "BilliardHall"
-        self.rooms = {name: Room(i * 2 + 1, False, name) for i, name in enumerate(room_names)}
-        self.hallways = [Room(i * 2 + 2, True, name) for i, name in enumerate(hallway_names)]
 
         self.htmlLayout = {"study": [(96, 239), (138, 255)], "hall": [(312, 482), (138, 255)],
                            "lounge": [(555, 698), (138, 255)], "library": [(96, 239), (335, 486)]
@@ -92,36 +89,56 @@ class Gameboard:
                                "LibraryConservatory": [(120, 192), (490, 554)],
                                "BilliardBall": [(362, 433), (490, 554)], "DiningKitchen": [(600, 675), (490, 554)],
                                "ConservatoryBall": [(241, 313), (600, 665)], "BallKitchen": [(482, 555), (600, 665)]}
+
+        # We follow the rule of "from left to right, from up to below" to give hallway their names
+        # For example, the hallway between Hall and Billiary should be "HallBilliard", not "BilliardHall"
+        self.rooms = {name: Room(i * 2 + 1, False, self.htmlLayout[name], name) for i, name in enumerate(room_names)}
+        self.hallways = {name: Room(i * 2 + 2, True, self.htmlHallLayout[name], name) for i, name in enumerate(hallway_names)}
+
         self.layout = {
-            self.rooms["study"]: [self.rooms["library"], self.rooms["hall"], self.rooms["kitchen"], self.hallways[0],
-                                  self.hallways[2]],
-            self.rooms["hall"]: [self.rooms["study"], self.rooms["billiard"], self.rooms["lounge"], self.hallways[0],
-                                 self.hallways[1], self.hallways[3]],
+            self.rooms["study"]: [self.rooms["library"], self.rooms["hall"], self.rooms["kitchen"], self.hallways["StudyHall"],
+                                  self.hallways["StudyLibrary"]],
+            self.rooms["hall"]: [self.rooms["study"], self.rooms["billiard"], self.rooms["lounge"], self.hallways["StudyHall"],
+                                 self.hallways["HallLounge"], self.hallways["HallBilliard"]],
             self.rooms["lounge"]: [self.rooms["hall"], self.rooms["dining"], self.rooms["conservatory"],
-                                   self.hallways[1], self.hallways[4]],
+                                   self.hallways["HallBilliard"], self.hallways["LoungeDining"]],
             self.rooms["library"]: [self.rooms["study"], self.rooms["billiard"], self.rooms["conservatory"],
-                                    self.hallways[2], self.hallways[5], self.hallways[7]],
+                                    self.hallways["StudyLibrary"], self.hallways["LibraryBilliard"], self.hallways["LibraryConservatory"]],
             self.rooms["billiard"]: [self.rooms["hall"], self.rooms["library"], self.rooms["dining"],
-                                     self.rooms["ballroom"], self.hallways[3], self.hallways[5], self.hallways[6],
-                                     self.hallways[8]],
+                                     self.rooms["ballroom"], self.hallways["HallBilliard"], self.hallways["LibraryBilliard"], self.hallways["BilliardDining"],
+                                     self.hallways["BilliardBall"]],
             self.rooms["dining"]: [self.rooms["billiard"], self.rooms["lounge"], self.rooms["kitchen"],
-                                   self.hallways[4], self.hallways[6], self.hallways[9]],
-            self.rooms["conservatory"]: [self.rooms["library"], self.rooms["billiard"], self.rooms["lounge"],
-                                         self.hallways[7], self.hallways[10]],
+                                   self.hallways["LoungeDining"], self.hallways["BilliardDining"], self.hallways["DiningKitchen"]],
+            self.rooms["conservatory"]: [self.rooms["library"], self.rooms["ballroom"], self.rooms["lounge"],
+                                         self.hallways["LibraryConservatory"], self.hallways["ConservatoryBall"]],
             self.rooms["ballroom"]: [self.rooms["conservatory"], self.rooms["billiard"], self.rooms["kitchen"],
-                                     self.hallways[8], self.hallways[10], self.hallways[11]],
-            self.rooms["kitchen"]: [self.rooms["ballroom"], self.rooms["dining"], self.rooms["study"], self.hallways[9],
-                                    self.hallways[11]]}
+                                     self.hallways["BilliardBall"], self.hallways["ConservatoryBall"], self.hallways["BallKitchen"]],
+            self.rooms["kitchen"]: [self.rooms["ballroom"], self.rooms["dining"], self.rooms["study"], self.hallways["DiningKitchen"],
+                                    self.hallways["BallKitchen"]]}
+        self.hallLayout = {
+            self.hallways["StudyHall"]: [self.rooms["study"], self.rooms["hall"]], 
+            self.hallways["HallLounge"]: [self.rooms["lounge"], self.rooms["hall"]],
+            self.hallways["StudyLibrary"]: [self.rooms["study"], self.rooms["library"]],
+            self.hallways["HallBilliard"]: [self.rooms["billiard"], self.rooms["hall"]],
+            self.hallways["LoungeDining"]: [self.rooms["lounge"], self.rooms["dining"]],
+            self.hallways["LibraryBilliard"]: [self.rooms["library"], self.rooms["billiard"]],
+            self.hallways["BilliardDining"]: [self.rooms["billiard"], self.rooms["dining"]],
+            self.hallways["LibraryConservatory"]: [self.rooms["library"], self.rooms["conservatory"]],
+            self.hallways["BilliardBall"]: [self.rooms["billiard"], self.rooms["ballroom"]], 
+            self.hallways["DiningKitchen"]: [self.rooms["kitchen"], self.rooms["dining"]],
+            self.hallways["ConservatoryBall"]: [self.rooms["conservatory"], self.rooms["ballroom"]], 
+            self.hallways["BallKitchen"]: [self.rooms["ballroom"], self.rooms["kitchen"]]
+        }
 
     def get_room_by_id(self, room_id):
         # Check in rooms
         for room in self.rooms.values():
-            if room.Id == room_id:
+            if room.id == room_id:
                 return room
 
         # Check in hallways
-        for room in self.hallways:
-            if room.Id == room_id:
+        for room in self.hallways.values():
+            if room.id == room_id:
                 return room
 
         # If no room is found
@@ -134,7 +151,7 @@ class Gameboard:
                 return room
 
         # Check in hallways
-        for room in self.hallways:
+        for room in self.hallways.values():
             if room.name == room_name:
                 return room
 
@@ -152,8 +169,8 @@ class Gameboard:
                         if (secretpassage[0][0] <= x <= secretpassage[0][1] and secretpassage[1][0] <= y <=
                                 secretpassage[1][1]):
                             return secret[0]
-                        else:
-                            return room[0]
+                    else:
+                        return room[0]
                 else:
                     return room[0]
         for halls in self.htmlHallLayout.items():

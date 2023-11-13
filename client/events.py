@@ -72,21 +72,25 @@ def handle_player_select(character):
     player_object=Player.getInstanceById(player_id)
 
     character_object=Character(None,character,"icon")
-    player_object.characterId=character_object.id
-
+    
     roomName=character_object.location
     room_object=Room.getInstanceByName(roomName)
-    player_object.roomId=room_object.id
 
+    if(player_object == None):
+        player_object = Player(player_id, character_object.id, character, username, room_object.id, room_object, 0)
 
+    else:
+        player_object.characterId=character_object.id
+        player_object.roomId=room_object.id
+        player_object.room = room_object
 
 
 
 # This function starts the game!
 @socketio.on("game_start")
-def handle_game_start():
+def handle_game_start():    
     emit("start_game", broadcast=True)
-
+    
 # Determines where the user clicked and returns the room
 @socketio.on("room_select")
 def room_selected(x, y):
@@ -101,15 +105,22 @@ def room_selected(x, y):
 def handle_character(character):
     emit("character", character, broadcast=True)
 
+@socketio.on("SID")
+def changeSid():
+    Player.instances_database[Player.instances_count - 1].id = request.sid
+
 # Handles when a player chooses a room
 # TODO: Get current player and make function def handle_player_room_choose(player: Player, newRoomId)
 def handle_player_room_choose(room: str):
-    # currRoom = board.get_room_by_id(player.roomId)
-
+    player = Player.getInstanceById(request.sid)
+    currRoom = board.get_room_by_id(player.room.id)
     newRoom = board.get_room_by_name(room)
-    print(newRoom.location)
-    # # newRoomChoices = board.layout[currRoom]
-    # if(newRoom in newRoomChoices):
-    #     player.move(newRoomId)
-    # else:
-    #     raise ValueError("You must choose a location that is adjacent to you (unless you can take a secret passage)")
+    if(currRoom.name in board.rooms):
+        newRoomChoices = board.layout[currRoom]
+    elif (currRoom.name in board.hallways):
+        newRoomChoices = board.hallLayout[currRoom]
+    if(newRoom in newRoomChoices):
+        player.move(newRoom)
+        print(player.room.name)
+    else:
+        raise ValueError("You must choose a location that is adjacent to you (unless you can take a secret passage)")
