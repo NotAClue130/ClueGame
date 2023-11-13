@@ -1,14 +1,15 @@
 # This routes function follows the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 # it initializes the website according to the template, game.html
 
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, session
 from backend.Player import Player
-
+import uuid
 
 main = Blueprint("main", __name__)
 
 @main.route("/")
 def entry():
+    session["id"] = uuid.uuid4()
     return render_template("entry.html")
 
 @main.route("/home", methods=["GET"])
