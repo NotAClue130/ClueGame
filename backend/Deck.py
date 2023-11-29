@@ -12,6 +12,7 @@ class Deck:
   
   def __init__(self):
     self.cards = []
+
     self.buildDeck()
 
     self.cardIds  = list(range(0, 21))    # build a list from 0 to 20
@@ -19,12 +20,12 @@ class Deck:
   # the buildDeck function will only be called during init, and it sets
   # the cards attribute to have one of each of the Card objects for the game clue
   def buildDeck(self):
-    self.cards = [Card( 0, "person", "Mr. Green"),       # people
-                  Card( 1, "person", "Prof. Plum"),
-                  Card( 2, "person", "Mrs. Peacock"),
-                  Card( 3, "person", "Miss Scarlet"),
-                  Card( 4, "person", "Mrs. White"),
-                  Card( 5, "person", "Col. Mustard"),
+    self.cards = [Card( 0, "person", "MrGreen"),       # people
+                  Card( 1, "person", "ProfPlum"),
+                  Card( 2, "person", "MrsPeacock"),
+                  Card( 3, "person", "MissScarlet"),
+                  Card( 4, "person", "MrsWhite"),
+                  Card( 5, "person", "ColMustard"),
                   Card( 6, "room", "Study"),             # rooms
                   Card( 7, "room", "Hall"),
                   Card( 8, "room", "Lounge"),
@@ -32,15 +33,14 @@ class Deck:
                   Card( 10, "room", "Billiard Room"),
                   Card( 11, "room", "Dining Room"),
                   Card( 12, "room", "Conservatory"),
-                  Card( 13, "room", "Ball-room"),
+                  Card( 13, "room", "Ballroom"),
                   Card( 14, "room", "Kitchen"),  
                   Card( 15, "weapon", "candlestick"),               # weapons       
                   Card( 16, "weapon", "revolver"),       
                   Card( 17, "weapon", "knife"),       
                   Card( 18, "weapon", "lead pipe"),       
                   Card( 19, "weapon", "rope"),       
-                  Card( 20, "weapon", "wrench")]       
-    
+                  Card( 20, "weapon", "wrench")]    
 
   # the Deal method will deal out the cards, it will build a dictionary 
   # where the keys are 

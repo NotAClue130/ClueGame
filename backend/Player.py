@@ -17,6 +17,8 @@ class Player:
         self.roomId = roomId  #unqiue room id 
         self.room = room
         self.hand = hand  # List of Card objects
+        self.isActive = True
+        self.wasMovedInSuggestion = False
         Player.instances_database.append(self)
         Player.instances_count += 1
 
@@ -26,10 +28,8 @@ class Player:
         self.roomId = new_room.id
         self.room = new_room
 
-    def makeSuggestion(self, roomId, suggested_cards):
+    def makeSuggestion(self, suggested_cards):
         # This method return a list of Card objects representing the suggestion
-        if self.roomId != roomId:
-            raise ValueError("You must make a suggestion for the room you are in.")
 
         # Check if all card types are different
         card_types = [card.getType() for card in suggested_cards]
@@ -39,13 +39,27 @@ class Player:
         return suggested_cards
 
     def answerSuggestion(self, suggested_cards):
-        # Check the player's hand for any of the suggested cards
-        # Return the matching card(s)
-        for card in self.hand:
-            if card in suggested_cards:
-                return card
-        # Return False if there are no associated cards
-        return False
+        # ask the user which card to return 
+        # get the intersection of the players hand and the suggested cards
+        possible_cards =  [card for card in suggested_cards if card in self.hand]
+
+        # if there are none,  return None
+        if len(possible_cards) == 0:
+            return None
+        
+        # otherwise ask the user which card to return
+        else:
+            card_names = [card.name for card in possible_cards]
+            output_string = "Which card would you like to return? \n "
+
+            for i1 in range(len(card_names)):
+                output_string = output_string + str(i1) + ": " + card_names[i1] + " \n "
+            
+            # get player selection: to do update to UI
+            card_num = input(output_string)      
+            return possible_cards[int(card_num)]
+
+
 
     def makeAccusation(self, accusation_cards):
         # This method return a list of Card objects representing the accusation

@@ -11,6 +11,7 @@ from flask_socketio import emit
 from backend.Board import *
 from backend.Player import *
 from backend.Character import *
+from backend.Game import Game
 import uuid
 
 # we will add all the events onto this object, then import
@@ -20,10 +21,12 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from client.dbAccount import*
+from dbAccount import*
 
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
 board = Gameboard()
+game = Game()
+
 
 # This connection function is from the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 @socketio.on("connect")
@@ -37,6 +40,16 @@ def handle_user_join(username):
     SQL_handle_user_join(db, session["id"], username)
     emit("player_joined", broadcast=True)
 
+    # want to add the player here!
+    player_id=session["id"]
+    player_object=Player.getInstanceById(player_id)
+    
+    if(player_object == None):
+        player_object = Player(player_id, None, None, username, None, None, None)
+
+    game.addPlayer(player_object)
+
+    print(len(game.players))
     # if a new player joins, we need to refresh their screen with all the users that have
     # previously made selections
     for character, username in SQL_get_characters_and_usernames(db):
@@ -78,10 +91,11 @@ def handle_player_select(character):
     room_object=Room.getInstanceByName(roomName)
 
     if(player_object == None):
-        player_object = Player(player_id, character_object.id, character, username, room_object.id, room_object, 0)
+        player_object = Player(player_id, character_object.id, character, username, room_object.id, room_object, None)
 
     else:
         player_object.characterId=character_object.id
+        player_object.characterName= character
         player_object.roomId=room_object.id
         player_object.room = room_object
 
@@ -91,7 +105,40 @@ def handle_player_select(character):
 @socketio.on("game_start")
 def handle_game_start():    
     emit("start_game", broadcast=True)
-    
+   
+   # if a game has started already, dont rerun everything,  THIS IS VERY BAD IF IT HAPPENS
+    if game.started:
+        return
+    # initialize the game object
+    game.initializeGame()
+
+    # add the deck to the database. 
+    # TODO: connect game position to gameboard position to the room card
+    for i1 in range(len(game.cards.cards)):
+        temp_card = game.cards.cards[i1]
+        SQL_add_card(db, temp_card.id, temp_card.name, temp_card.type)
+
+
+# =======================================================================================================================
+       
+    while game.finished == False:
+       # Here is the game logic. This piece needs to be integrated with the front end, rather than just occuring here!!!
+
+        # first, we get the move from the player whose turn it is
+        # TODO, if the player was moved last time by a suggestion 
+        game.move_phase() 
+        
+        # next we go to the suggestion phase
+        game.suggestion_phase(db)
+
+        # accustaion phase
+        game.accusation_phase(db)
+
+
+# =======================================================================================================================
+
+
+
 # Determines where the user clicked and returns the room
 @socketio.on("room_select")
 def room_selected(x, y):
@@ -117,7 +164,18 @@ def handle_player_room_choose(room: str):
         newRoomChoices = board.layout[currRoom]
     elif (currRoom.name in board.hallways):
         newRoomChoices = board.hallLayout[currRoom]
-    if(newRoom in newRoomChoices):
-        player.move(newRoom)
-    else:
+    
+    # first check if it is the current player's turn
+    if(player.id != game.currentPlayerId):        
+        print("It's not your turn")
+
+    # next check if it is the move phase of the turn
+    elif(game.turnPhase != "move"):
+        print("The move phase is over")
+
+    elif(newRoom not in newRoomChoices):
         raise ValueError("You must choose a location that is adjacent to you (unless you can take a secret passage)")
+    else:
+        player.move(newRoom)
+        game.turnPhase = "suggestion"   # this player's move is over
+

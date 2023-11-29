@@ -9,12 +9,11 @@ from backend.Deck import Deck
 from backend.Card import Card
 from backend.Game import Game
 
-from client.dbAccount import usr, pwd
+from dbAccount import usr, pwd
 
 # This will base the events on database
 from client.sql import *
 import pymysql
-
 # first connect to the database
 db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
 
@@ -23,10 +22,10 @@ SQL_refresh_database(db)
 # then create the app
 app = create_app()
 
-game_global = Game()
+
 
 # run the game!
 try:
-    socketio.run(app, host=('0.0.0.0'))
+    socketio.run(app, host=('0.0.0.0'), log_output=False, debug=False)
 except:
-    socketio.run(app, host=('0.0.0.0'), allow_unsafe_werkzeug=True)
+    socketio.run(app, host=('0.0.0.0'), allow_unsafe_werkzeug=True, log_output=False, debug=False)

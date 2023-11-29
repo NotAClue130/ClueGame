@@ -4,22 +4,50 @@ def SQL_refresh_database(db):
     # delete existing tables
     cursor = db.cursor()
     sql = """
-DROP TABLE IF EXISTS Characters, Users;
+DROP TABLE IF EXISTS Characters, Users, Cards;
     """
-    print(sql)
     cursor.execute(sql)
     db.commit()
   
     # then recreate the tables
-    SQL_create_table_users(db)
-    SQL_create_table_characters(db)
-  
+    SQL_create_table_users(cursor)
+    SQL_create_table_characters(cursor)
+    SQL_create_table_cards(cursor)
+    db.commit()
+    db.close()
+    return 0
+
+
+def SQL_create_table_cards(cursor):
+    sql = """
+   CREATE TABLE `NotAClue`.`Cards` (
+   `Id` int,
+   `name` VARCHAR(45),
+   `type` VARCHAR(45));
+    """
+    cursor.execute(sql)
+    return 0
+
+
+def SQL_add_card(db, id, name, type):
+    cursor = db.cursor()
+    sql = """
+    INSERT INTO `NotAClue`.`Cards`
+    (`Id`,
+    `name`, 
+    `type`)
+    VALUES
+    (%s, 
+    %s,
+    %s);
+    """
+    cursor.execute(sql, (id, name, type))
+    db.commit()
     return 0
 
 
 
-def SQL_create_table_users(db):
-    cursor = db.cursor()
+def SQL_create_table_users(cursor):
     sql = """
    CREATE TABLE `NotAClue`.`Users` (
   `SID` varchar(255),
@@ -27,12 +55,10 @@ def SQL_create_table_users(db):
   PRIMARY KEY (`SID`));
     """
     cursor.execute(sql)
-    db.commit()
     return 0
 
 
-def SQL_create_table_characters(db):
-    cursor = db.cursor()
+def SQL_create_table_characters(cursor):
     sql = """
     CREATE TABLE `NotAClue`.`Characters` (
     `character` VARCHAR(45) NOT NULL,
@@ -44,8 +70,6 @@ def SQL_create_table_characters(db):
     ON UPDATE NO ACTION);
         """
     cursor.execute(sql)
-    db.commit()
-    db.close()
     return 0
 
 
@@ -123,6 +147,18 @@ def SQL_get_character_based_on_username(db, username):
         return res[0][0]
     return None
 
+def SQL_get_card_id(db, cardName):
+    cursor = db.cursor()
+    sql = """
+    SELECT c.`Id`
+    FROM `NotAClue`.`Cards` c
+    WHERE c.name = %s;
+            """
+    cursor.execute(sql, (cardName,))
+    res = cursor.fetchall()
+    if res:
+        return res[0][0]
+    return None
 
 def SQL_delete_character_based_on_charactername(db, charactername):
     cursor = db.cursor()

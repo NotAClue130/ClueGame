@@ -2,3 +2,4 @@ dbAccount.py
 .DS_Store
 __pycache__
 flaskEnv
+client/dbAccount.py

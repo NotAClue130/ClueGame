@@ -1,7 +1,7 @@
 class Room:
     instances_count = 0
     instances_database = []
-    room_names = ["study", "hall", "lounge", "library", "billiard", "dining", "conservatory", "ballroom", "kitchen"]
+    room_names = ["Study", "Hall", "Lounge", "Library", "Billiard Room", "Dining Room", "Conservatory", "Ballroom", "Kitchen"]
     hallway_names = ["StudyHall", "HallLounge", "StudyLibrary", "HallBilliard", "LoungeDining", "LibraryBilliard",
                      "BilliardDining", "LibraryConservatory", "BilliardBall", "DiningKitchen", "ConservatoryBall",
                      "BallKitchen"]
@@ -70,18 +70,18 @@ class Room:
 class Gameboard:
     def __init__(self):
         # Initialize all rooms and hallways
-        room_names = ["study", "hall", "lounge", "library", "billiard", "dining", "conservatory", "ballroom", "kitchen"]
+        room_names = ["Study", "Hall", "Lounge", "Library", "Billiard Room", "Dining Room", "Conservatory", "Ballroom", "Kitchen"]
         hallway_names = ["StudyHall", "HallLounge", "StudyLibrary", "HallBilliard", "LoungeDining", "LibraryBilliard",
                          "BilliardDining", "LibraryConservatory", "BilliardBall", "DiningKitchen", "ConservatoryBall",
                          "BallKitchen"]
 
-        self.htmlLayout = {"study": [(96, 239), (138, 255)], "hall": [(312, 482), (138, 255)],
-                           "lounge": [(555, 698), (138, 255)], "library": [(96, 239), (335, 486)]
-            , "billiard": [(312, 482), (335, 486)], "dining": [(555, 698), (335, 486)],
-                           "conservatory": [(96, 239), (555, 685)], "ballroom": [(312, 482), (555, 685)],
-                           "kitchen": [(555, 698), (555, 685)]}
-        self.htmlSecretPassageLayout = {"kitchen": [(100, 150), (143, 195)], "conservatory": [(630, 688), (147, 210)],
-                                        "lounge": [(105, 155), (627, 678)], "study": [(640, 690), (633, 676)]}
+        self.htmlLayout = {"Study": [(96, 239), (138, 255)], "Hall": [(312, 482), (138, 255)],
+                           "Lounge": [(555, 698), (138, 255)], "Library": [(96, 239), (335, 486)]
+            , "Billiard Room": [(312, 482), (335, 486)], "Dining Room": [(555, 698), (335, 486)],
+                           "Conservatory": [(96, 239), (555, 685)], "Ballroom": [(312, 482), (555, 685)],
+                           "Kitchen": [(555, 698), (555, 685)]}
+        self.htmlSecretPassageLayout = {"Kitchen": [(100, 150), (143, 195)], "Conservatory": [(630, 688), (147, 210)],
+                                        "Lounge": [(105, 155), (627, 678)], "Study": [(640, 690), (633, 676)]}
         self.htmlHallLayout = {"StudyHall": [(241, 313), (161, 223)], "HallLounge": [(482, 555), (161, 223)],
                                "StudyLibrary": [(120, 192), (270, 334)], "HallBilliard": [(362, 433), (270, 334)],
                                "LoungeDining": [(600, 675), (270, 334)], "LibraryBilliard": [(241, 313), (379, 445)],
@@ -96,38 +96,38 @@ class Gameboard:
         self.hallways = {name: Room(i * 2 + 2, True, self.htmlHallLayout[name], name) for i, name in enumerate(hallway_names)}
 
         self.layout = {
-            self.rooms["study"]: [self.rooms["library"], self.rooms["hall"], self.rooms["kitchen"], self.hallways["StudyHall"],
+            self.rooms["Study"]: [self.rooms["Library"], self.rooms["Hall"], self.rooms["Kitchen"], self.hallways["StudyHall"],
                                   self.hallways["StudyLibrary"]],
-            self.rooms["hall"]: [self.rooms["study"], self.rooms["billiard"], self.rooms["lounge"], self.hallways["StudyHall"],
+            self.rooms["Hall"]: [self.rooms["Study"], self.rooms["Billiard Room"], self.rooms["Lounge"], self.hallways["StudyHall"],
                                  self.hallways["HallLounge"], self.hallways["HallBilliard"]],
-            self.rooms["lounge"]: [self.rooms["hall"], self.rooms["dining"], self.rooms["conservatory"],
+            self.rooms["Lounge"]: [self.rooms["Hall"], self.rooms["Dining Room"], self.rooms["Conservatory"],
                                    self.hallways["HallBilliard"], self.hallways["LoungeDining"]],
-            self.rooms["library"]: [self.rooms["study"], self.rooms["billiard"], self.rooms["conservatory"],
+            self.rooms["Library"]: [self.rooms["Study"], self.rooms["Billiard Room"], self.rooms["Conservatory"],
                                     self.hallways["StudyLibrary"], self.hallways["LibraryBilliard"], self.hallways["LibraryConservatory"]],
-            self.rooms["billiard"]: [self.rooms["hall"], self.rooms["library"], self.rooms["dining"],
-                                     self.rooms["ballroom"], self.hallways["HallBilliard"], self.hallways["LibraryBilliard"], self.hallways["BilliardDining"],
+            self.rooms["Billiard Room"]: [self.rooms["Hall"], self.rooms["Library"], self.rooms["Dining Room"],
+                                     self.rooms["Ballroom"], self.hallways["HallBilliard"], self.hallways["LibraryBilliard"], self.hallways["BilliardDining"],
                                      self.hallways["BilliardBall"]],
-            self.rooms["dining"]: [self.rooms["billiard"], self.rooms["lounge"], self.rooms["kitchen"],
+            self.rooms["Dining Room"]: [self.rooms["Billiard Room"], self.rooms["Lounge"], self.rooms["Kitchen"],
                                    self.hallways["LoungeDining"], self.hallways["BilliardDining"], self.hallways["DiningKitchen"]],
-            self.rooms["conservatory"]: [self.rooms["library"], self.rooms["ballroom"], self.rooms["lounge"],
+            self.rooms["Conservatory"]: [self.rooms["Library"], self.rooms["Ballroom"], self.rooms["Lounge"],
                                          self.hallways["LibraryConservatory"], self.hallways["ConservatoryBall"]],
-            self.rooms["ballroom"]: [self.rooms["conservatory"], self.rooms["billiard"], self.rooms["kitchen"],
+            self.rooms["Ballroom"]: [self.rooms["Conservatory"], self.rooms["Billiard Room"], self.rooms["Kitchen"],
                                      self.hallways["BilliardBall"], self.hallways["ConservatoryBall"], self.hallways["BallKitchen"]],
-            self.rooms["kitchen"]: [self.rooms["ballroom"], self.rooms["dining"], self.rooms["study"], self.hallways["DiningKitchen"],
+            self.rooms["Kitchen"]: [self.rooms["Ballroom"], self.rooms["Dining Room"], self.rooms["Study"], self.hallways["DiningKitchen"],
                                     self.hallways["BallKitchen"]]}
         self.hallLayout = {
-            self.hallways["StudyHall"]: [self.rooms["study"], self.rooms["hall"]], 
-            self.hallways["HallLounge"]: [self.rooms["lounge"], self.rooms["hall"]],
-            self.hallways["StudyLibrary"]: [self.rooms["study"], self.rooms["library"]],
-            self.hallways["HallBilliard"]: [self.rooms["billiard"], self.rooms["hall"]],
-            self.hallways["LoungeDining"]: [self.rooms["lounge"], self.rooms["dining"]],
-            self.hallways["LibraryBilliard"]: [self.rooms["library"], self.rooms["billiard"]],
-            self.hallways["BilliardDining"]: [self.rooms["billiard"], self.rooms["dining"]],
-            self.hallways["LibraryConservatory"]: [self.rooms["library"], self.rooms["conservatory"]],
-            self.hallways["BilliardBall"]: [self.rooms["billiard"], self.rooms["ballroom"]], 
-            self.hallways["DiningKitchen"]: [self.rooms["kitchen"], self.rooms["dining"]],
-            self.hallways["ConservatoryBall"]: [self.rooms["conservatory"], self.rooms["ballroom"]], 
-            self.hallways["BallKitchen"]: [self.rooms["ballroom"], self.rooms["kitchen"]]
+            self.hallways["StudyHall"]: [self.rooms["Study"], self.rooms["Hall"]], 
+            self.hallways["HallLounge"]: [self.rooms["Lounge"], self.rooms["Hall"]],
+            self.hallways["StudyLibrary"]: [self.rooms["Study"], self.rooms["Library"]],
+            self.hallways["HallBilliard"]: [self.rooms["Billiard Room"], self.rooms["Hall"]],
+            self.hallways["LoungeDining"]: [self.rooms["Lounge"], self.rooms["Dining Room"]],
+            self.hallways["LibraryBilliard"]: [self.rooms["Library"], self.rooms["Billiard Room"]],
+            self.hallways["BilliardDining"]: [self.rooms["Billiard Room"], self.rooms["Dining Room"]],
+            self.hallways["LibraryConservatory"]: [self.rooms["Library"], self.rooms["Conservatory"]],
+            self.hallways["BilliardBall"]: [self.rooms["Billiard Room"], self.rooms["Ballroom"]], 
+            self.hallways["DiningKitchen"]: [self.rooms["Kitchen"], self.rooms["Dining Room"]],
+            self.hallways["ConservatoryBall"]: [self.rooms["Conservatory"], self.rooms["Ballroom"]], 
+            self.hallways["BallKitchen"]: [self.rooms["Ballroom"], self.rooms["Kitchen"]]
         }
 
     def get_room_by_id(self, room_id):
@@ -158,12 +158,12 @@ class Gameboard:
         # If no room is found
         return None
 
-    # Determines where user clicked on board and returns the room, hall, or secret passage
+    # Determines where user clicked on board and returns the room, Hall, or secret passage
     def determine_html_location(self, x, y):
         for room in self.htmlLayout.items():
             location = room[1]
             if (location[0][0] <= x <= location[0][1] and location[1][0] <= y <= location[1][1]):
-                if (room[0] == "study" or room[0] == "lounge" or room[0] == "conservatory" or room[0] == "kitchen"):
+                if (room[0] == "Study" or room[0] == "Lounge" or room[0] == "Conservatory" or room[0] == "Kitchen"):
                     for secret in self.htmlSecretPassageLayout.items():
                         secretpassage = secret[1]
                         if (secretpassage[0][0] <= x <= secretpassage[0][1] and secretpassage[1][0] <= y <=
@@ -181,5 +181,5 @@ class Gameboard:
 
 #       Layout Graph
 # Study         Hall       Lounge
-# Library       Billiard   Dining
+# Library       Billiard Room   Dining Room
 # Conservatory  Ballroom   Kitchen
