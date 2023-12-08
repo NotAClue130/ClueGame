@@ -20,9 +20,9 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from dbAccount import*
+# from dbAccount import*
 
-db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user="root", password="password", db='NotAClue', charset='utf8')
 board = Gameboard()
 game = Game()
 characterChoices = {}
@@ -59,15 +59,23 @@ def handle_user_join(username):
 @socketio.on("addCharacterChoices")
 def add(character):
     username = SQL_get_username_based_on_sid(db, session["id"])
-    characterChoices[username] = character
-    emit("characterAdd", {"usr": username, "chr": character})
+    if(username in characterChoices.keys() or character in characterChoices.values()):
+        raise ValueError("You have already selected a character!!")
+    else:
+        characterChoices[username] = character
+        emit("characterAdd", {"usr": username, "chr": character})
 
 @socketio.on("removeCharacterChoices")
 def remove(character):
     username = SQL_get_username_based_on_sid(db, session["id"])
-    emit("characterRemove", {"usr": username, "chr": character})
-    del characterChoices[username]
-
+    if (username in characterChoices.keys()):
+        if(character != characterChoices[username]):
+            raise ValueError("This character is already taken up by other users!!")
+        else:
+            emit("characterRemove", {"usr": username, "chr": character})
+            del characterChoices[username]
+    else:
+        raise ValueError("You cannot unselect other players characters!!")
 @socketio.on("updateCharacterChoices")
 def update():
     emit("characterUpdate", {"choices": characterChoices, "characters": characterList})
