@@ -12,7 +12,6 @@ from backend.Board import *
 from backend.Player import *
 from backend.Character import *
 from backend.Game import Game
-import uuid
 
 # we will add all the events onto this object, then import
 # this in init
@@ -21,12 +20,13 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from dbAccount import*
+# from dbAccount import*
 
-db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user="root", password="password", db='NotAClue', charset='utf8')
 board = Gameboard()
 game = Game()
-
+characterChoices = {}
+characterList = ["Green", "Peacock", "Scarlet", "Plum", "White", "Mustard"]
 
 # This connection function is from the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 @socketio.on("connect")
@@ -56,13 +56,39 @@ def handle_user_join(username):
         emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
 
+@socketio.on("addCharacterChoices")
+def add(character):
+    username = SQL_get_username_based_on_sid(db, session["id"])
+    if(username in characterChoices.keys() or character in characterChoices.values()):
+        raise ValueError("You have already selected a character!!")
+    else:
+        characterChoices[username] = character
+        emit("characterAdd", {"usr": username, "chr": character})
+
+@socketio.on("removeCharacterChoices")
+def remove(character):
+    username = SQL_get_username_based_on_sid(db, session["id"])
+    if (username in characterChoices.keys()):
+        if(character != characterChoices[username]):
+            raise ValueError("This character is already taken up by other users!!")
+        else:
+            emit("characterRemove", {"usr": username, "chr": character})
+            del characterChoices[username]
+    else:
+        raise ValueError("You cannot unselect other players characters!!")
+@socketio.on("updateCharacterChoices")
+def update():
+    emit("characterUpdate", {"choices": characterChoices, "characters": characterList})
+    
 # This handles the event where a player selectss a character to use
 @socketio.on("player_select")
 def handle_player_select(character):
     # "playerName" is synonymous with "character"
     # find the username, this is a bad way to go about it
     print("PLAYERSELECT: ", session["id"])
+    
     username = SQL_get_username_based_on_sid(db, session["id"])
+
     characters_and_usernames = SQL_get_characters_and_usernames(db)
     characters = [i[0] for i in characters_and_usernames]
     usernames = [i[1] for i in characters_and_usernames]
@@ -100,6 +126,11 @@ def handle_player_select(character):
         player_object.room = room_object
 
 
+
+@socketio.on("has_game_started")
+def did_game_start():
+    if game.started:
+       emit("click_button")
 
 # This function starts the game!
 @socketio.on("game_start")

@@ -168,7 +168,7 @@
               <div class="card-body Green">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/MrGreen.png">
                 <button type="button" id="green-btn" class="w-100 btn btn-lg btn-outline-primary Green-select" onclick="selectedCharacter('Green')">Select</button>
-                <input type="text" class="w-50" id="green" value="" name="input1">
+                <input type="text" class="w-50" id="Green" value="" name="input1">
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@
               <div class="card-body Peacock">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/MrsPeacock.png">
                 <button type="button" id="peacock-btn" class="w-100 btn btn-lg btn-outline-primary Peacock-select" onclick="selectedCharacter('Peacock')">Select</button>
-                <input type="text" class="w-50" id="peacock" value="" name="input1">
+                <input type="text" class="w-50" id="Peacock" value="" name="input1">
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@
               <div class="card-body Scarlet">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/MissScarlet.png">
                 <button type="button" id="scarlet-btn" class="w-100 btn btn-lg btn-outline-primary Scarlet-select" onclick="selectedCharacter('Scarlet')">Select</button>
-                <input type="text" class="w-50" id="scarlet" value="" name="input1">
+                <input type="text" class="w-50" id="Scarlet" value="" name="input1">
               </div>
             </div>
           </div>
@@ -204,7 +204,7 @@
               <div class="card-body Plum">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/ProfPlum.png">
                 <button type="button" id="plum-btn" class="w-100 btn btn-lg btn-outline-primary Plum-select" onclick="selectedCharacter('Plum')">Select</button>
-                <input type="text" class="w-50" id="plum" value="" name="input1">
+                <input type="text" class="w-50" id="Plum" value="" name="input1">
               </div>
             </div>
           </div>
@@ -216,7 +216,7 @@
               <div class="card-body White">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/mrsWhite.png">
                 <button type="button" id="white-btn" class="w-100 btn btn-lg btn-outline-primary White-select" onclick="selectedCharacter('White')">Select</button>
-                <input type="text" class="w-50" id="white" value="" name="input1">
+                <input type="text" class="w-50" id="White" value="" name="input1">
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@
               <div class="card-body Mustard">
                 <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/images/ColMustard.png">
                 <button type="button" id="mustard-btn" class="w-100 btn btn-lg btn-outline-primary Mustard-select" onclick="selectedCharacter('Mustard')">Select</button>
-                <input type="text" class="w-50" id="mustard" value="" name="input1">
+                <input type="text" class="w-50" id="Mustard" value="" name="input1">
             </div>
         </div>
       </div>
@@ -237,41 +237,89 @@
     <div class="text-center">
       <form action="/board" method="">
         <input type="hidden" class="characterJoined" name="characterSelected" value="" />
-        <button type="submit" class="btn btn-outline-secondary" onclick="joinedCharacter()">Start</button>
+        <button type="submit" class="btn btn-outline-secondary" onclick="joinedCharacter()" id="start-btn">Start</button>
       </form>
     </div>
   </div>
  
      <script>
          const socket = io({autoConnect: false});
+         var intervalID = setInterval(updateCharacterSelect, 500)
+         var GameStartInterval = setInterval(checkGameStart, 500)
+
+         function updateCharacterSelect(){
+          socket.emit("updateCharacterChoices")
+         }
+
          function selectedCharacter(character) {
-        socket.emit("character", character); 
+          const button = document.querySelector("." + character + "-select");
+          const selectOrNot = button.textContent;
+          if (selectOrNot === "Select") {
+            socket.emit("addCharacterChoices", character)
+          }
+          else{
+            socket.emit("removeCharacterChoices", character)
+          }
+        }
+
+        socket.on("click_button", function() {
+          document.getElementById("start-btn").click()
+        })
+
+        function checkGameStart(){
+          socket.emit("has_game_started")
         }
 
         function joinedCharacter(){
           socket.emit("game_start")
         }
 
-        socket.on("character", function (character) {
-        const button = document.querySelector("." + character + "-select");
-        const cardBody = document.querySelector(".card-body." + character);
-        const selectOrNot = button.textContent;
-        if (button) {
-            if (selectOrNot === "Select") {
-            if (cardBody) {
-                cardBody.style.opacity = 0.5;
-                button.textContent = "Unselect";
-
-                document.querySelector('.characterJoined').setAttribute("value", character); 
-            }
-            } else if (selectOrNot === "Unselect") {
-            cardBody.style.opacity = 1;
-            button.textContent = "Select";
-
-            document.querySelector('.characterJoined').setAttribute("value", ""); 
-            }
-        }
+        socket.on("characterAdd", function (selected) {
+          character = selected["chr"]
+          const button = document.querySelector("." + character + "-select");
+          const cardBody = document.querySelector(".card-body." + character);
+          const inputvalue = document.getElementById(character)
+          inputvalue.value = selected["usr"]
+          cardBody.style.opacity = 0.5;
+          button.textContent = "Unselect";
+          document.querySelector('.characterJoined').setAttribute("value", character); 
         });
+
+        socket.on("characterRemove", function (selected) {
+          character = selected["chr"]
+          const inputvalue = document.getElementById(character)
+          const cardBody = document.querySelector(".card-body." + character);
+          const button = document.querySelector("." + character + "-select");
+          inputvalue.value = ""
+          cardBody.style.opacity = 1;
+          button.textContent = "Select";
+          document.querySelector('.characterJoined').setAttribute("value", ""); 
+        });
+        
+        socket.on("characterUpdate", function (selected) {
+          var values = Object.keys(selected["choices"]).map(function(key){return selected["choices"][key]})
+          for(let i = 0; i < selected["characters"].length; i++){
+            character = selected["characters"][i]
+            const button = document.querySelector("." + character + "-select");
+            const selectOrNot = button.textContent;
+            const cardBody = document.querySelector(".card-body." + character);
+            const inputvalue = document.getElementById(character)
+            if(selectOrNot == "Unselect" && !(values.includes(character))){
+              inputvalue.value = ""
+              cardBody.style.opacity = 1;
+              button.textContent = "Select";
+            }
+            if(values.includes(character)){
+              cardBody.style.opacity = 0.5;
+              button.textContent = "Unselect";
+              var user = Object.keys(selected["choices"]).find(key => selected["choices"][key] === character);
+              inputvalue.value = String(user)
+            }
+          }
+        })
+
+
+      
  /* 
  This first function is from the tutorial:     https://www.youtube.com/watch?v=AMp6hlA8xKA
  It prompts the user for their username and stores it on the join button
