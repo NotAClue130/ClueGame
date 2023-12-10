@@ -67,5 +67,5 @@ class Character:
         if characterName not in cls.mapping_from_character_to_boolean:
             print(characterName)
             raise ValueError("This character doesn't belong to clue game!!")
-        if cls.mapping_from_character_to_boolean[characterName]:
-            raise ValueError("This character is already taken up by other users!!")
+        # if cls.mapping_from_character_to_boolean[characterName]:
+        #     raise ValueError("This character is already taken up by other users!!")
