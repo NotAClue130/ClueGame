@@ -76,6 +76,7 @@ def remove(character):
             del characterChoices[username]
     else:
         raise ValueError("You cannot unselect other players characters!!")
+        
 @socketio.on("updateCharacterChoices")
 def update():
     emit("characterUpdate", {"choices": characterChoices, "characters": characterList})
