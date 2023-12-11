@@ -20,13 +20,19 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from client.dbAccount import usr,pwd
+from client import dbAccount
 
-db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user="root", password=dbAccount.pwd, db='NotAClue', charset='utf8')
 board = Gameboard()
 game = Game()
 characterChoices = {}
 characterList = ["Green", "Peacock", "Scarlet", "Plum", "White", "Mustard"]
+
+selected = {
+    'selectedChar': "",
+    'userName': ""
+}
+
 
 # This connection function is from the tutorial: https://www.youtube.com/watch?v=AMp6hlA8xKA
 @socketio.on("connect")
@@ -37,6 +43,7 @@ def handle_connect():
 # note that the game.html enforces that the user name is nonempty
 @socketio.on("user_join")
 def handle_user_join(username):
+    selected["userName"] = username
     SQL_handle_user_join(db, session["id"], username)
     emit("player_joined", broadcast=True)
 
@@ -55,6 +62,12 @@ def handle_user_join(username):
     for character, username in SQL_get_characters_and_usernames(db):
         emit("playerChoice", {"player": character, "username": username}, broadcast=True)
 
+# Notification for suggestion and accusation
+@socketio.on("notification")
+def toast_notify(data):
+    suggestion, cards = data
+    socketio.emit("notifying", [suggestion, cards])
+
 
 @socketio.on("addCharacterChoices")
 def add(character):
@@ -62,6 +75,7 @@ def add(character):
     if(username in characterChoices.keys() or character in characterChoices.values()):
         raise ValueError("You have already selected a character!!")
     else:
+        selected['selectedChar'] = character
         characterChoices[username] = character
         emit("characterAdd", {"usr": username, "chr": character})
 
@@ -72,6 +86,7 @@ def remove(character):
         if(character != characterChoices[username]):
             raise ValueError("This character is already taken up by other users!!")
         else:
+            selected['selectedChar'] = ""
             emit("characterRemove", {"usr": username, "chr": character})
             del characterChoices[username]
     else:
@@ -126,8 +141,6 @@ def handle_player_select(character):
         player_object.roomId=room_object.id
         player_object.room = room_object
 
-
-
 @socketio.on("has_game_started")
 def did_game_start():
     if game.started:
@@ -135,7 +148,7 @@ def did_game_start():
 
 # This function starts the game!
 @socketio.on("game_start")
-def handle_game_start():    
+def handle_game_start():   
     emit("start_game", broadcast=True)
    
    # if a game has started already, dont rerun everything,  THIS IS VERY BAD IF IT HAPPENS
@@ -211,3 +224,13 @@ def handle_player_room_choose(room: str):
         player.move(newRoom)
         game.turnPhase = "suggestion"   # this player's move is over
 
+
+
+@socketio.on("connect")
+def return_check():
+    socketio.emit("start_with_player", selected)
+
+
+
+
+    

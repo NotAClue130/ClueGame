@@ -5,7 +5,7 @@
 # Please enter the variable usr the username to log in the MySQL database on your computer.
 usr = "root"
 # Please enter the variable pwd the password to log in the MySQL database on your computer.
-pwd = "albert123"
+pwd = "albert12345"
 
 assert usr is not None, "You have not changed the value of the variable usr"
 assert pwd is not None, "You have not changed the value of the variable pwd"
