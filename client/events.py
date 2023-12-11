@@ -20,9 +20,9 @@ from .extensions import socketio
 # This will base the events on database
 from .sql import *
 import pymysql
-from client.dbAccount import usr, pwd
+# from dbAccount import*
 
-db = pymysql.connect(host='localhost', port=3306, user=usr, password=pwd, db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user="root", password="password", db='NotAClue', charset='utf8')
 board = Gameboard()
 game = Game()
 characterChoices = {}
