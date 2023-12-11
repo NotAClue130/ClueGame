@@ -9,7 +9,7 @@ from backend.Deck import Deck
 from backend.Card import Card
 from backend.Game import Game
 
-from dbAccount import usr, pwd
+from client.dbAccount import usr, pwd
 
 # This will base the events on database
 from client.sql import *
