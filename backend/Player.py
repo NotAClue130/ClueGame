@@ -4,6 +4,7 @@
 
 from backend.Board import Gameboard
 from backend.Card import Card
+import random 
 
 class Player:
     instances_count = 0
@@ -101,6 +102,8 @@ class Player:
     def gethtmlLocal(cls, room):
         x = room.htmlLocation[0]
         y = room.htmlLocation[1]
+        choices = [(x[0] + x[1])/2, (((x[0] + x[1])/2) - 100)]
+        middlex = random.choice(choices)
         middlex = (x[0] + x[1])/2
         middley = (y[0] + y[1])/2
-        return (str(middlex) + "px, " + str(middley) + "px")
+        return (str(middlex -313) + "px, " + str(middley - 15) + "px")

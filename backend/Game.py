@@ -91,6 +91,7 @@ class Game:
         print("\n \n \n \n \n \n \n \n \n \n \n \n \n \n")
         print(answered_card.name)  # (swap this to the UI)
         print("\n \n \n \n \n \n \n \n \n \n \n \n \n \n")
+        self.set_next_player_turn()
 
     def accusation_phase(self, db):
         curr_player = self.players[self.playerTurn]
@@ -140,29 +141,34 @@ class Game:
             
 
     def handle_suggestion(self, suggested_cards):
-        answered = False
-        # we answer the suggestion clockwise
-        player_answering_id = (self.playerTurn + 1) % self.numPlayers
+        self.players[self.playerTurn + 1].move(self.players[self.playerTurn].room)
+        if(suggested_cards['Murder'] == self.solution[0].name and suggested_cards['Weapon'] == self.solution[2].name):
+            print("MADE IT HERE")
+        
+        self.set_next_player_turn()
+        # answered = False
+        # # we answer the suggestion clockwise
+        # player_answering_id = (self.playerTurn + 1) % self.numPlayers
 
-        # make sure we haven't already answered this, and also ensure that all other players 
-        # haven't already checked
-        while answered == False & player_answering_id != self.currentPlayerId:
+        # # make sure we haven't already answered this, and also ensure that all other players 
+        # # haven't already checked
+        # while answered == False & player_answering_id != self.currentPlayerId:
 
-            player_answering = self.players[player_answering_id]
+        #     player_answering = self.players[player_answering_id]
             
-            returned_card = player_answering.answerSuggestion( suggested_cards)
-            if returned_card != None:
-                # move on to the next phase
-                self.turnPhase = "accusation"                
-                return returned_card
-            else:
-                print(' You do not have a card to answer') # add something to the user interface for this!
-                player_answering_id = (player_answering_id + 1) % self.numPlayers
-                if player_answering_id == self.playerTurn:
-                    self.turnPhase = "accusation"
-                    return None
-        # move on to the next phase
-        self.turnPhase = "accusation"
+        #     returned_card = player_answering.answerSuggestion(suggested_cards)
+        #     if returned_card != None:
+        #         # move on to the next phase
+        #         self.turnPhase = "accusation"                
+        #         return returned_card
+        #     else:
+        #         print(' You do not have a card to answer') # add something to the user interface for this!
+        #         player_answering_id = (player_answering_id + 1) % self.numPlayers
+        #         if player_answering_id == self.playerTurn:
+        #             self.turnPhase = "accusation"
+        #             return None
+        # # move on to the next phase
+        # self.turnPhase = "accusation"
         # we didn't get a solution
         return None
 
@@ -190,8 +196,6 @@ class Game:
 
             # if the next player is active set it!
             if self.players[self.playerTurn].isActive:
-
-
                 self.currentPlayerId = self.players[self.playerTurn].id
                 self.turnPhase = "move"
                 valid_player  = True

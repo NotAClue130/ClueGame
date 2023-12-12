@@ -22,7 +22,7 @@ from .sql import *
 import pymysql
 from client import dbAccount
 
-db = pymysql.connect(host='localhost', port=3306, user="root", password=dbAccount.pwd, db='NotAClue', charset='utf8')
+db = pymysql.connect(host='localhost', port=3306, user="root", password="password", db='NotAClue', charset='utf8')
 board = Gameboard()
 game = Game()
 characterChoices = {}
@@ -66,6 +66,8 @@ def handle_user_join(username):
 @socketio.on("notification")
 def toast_notify(data):
     suggestion, cards = data
+    print(suggestion)
+    game.handle_suggestion(suggestion)
     socketio.emit("notifying", [suggestion, cards])
 
 
@@ -157,6 +159,8 @@ def handle_game_start():
     # initialize the game object
     game.initializeGame()
 
+    print(game.solution[0].name, game.solution[2].name)
+
     # add the deck to the database. 
     # TODO: connect game position to gameboard position to the room card
     for i1 in range(len(game.cards.cards)):
@@ -186,7 +190,7 @@ def handle_game_start():
 
 # Determines where the user clicked and returns the room
 @socketio.on("room_select")
-def room_selected(x, y):
+def room_selected(x, y):    
     location = board.determine_html_location(x, y)
     if location == None:
         ValueError("Choose a room, hallway, or secret passage please")

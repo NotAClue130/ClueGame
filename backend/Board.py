@@ -75,20 +75,20 @@ class Gameboard:
                          "BilliardDining", "LibraryConservatory", "BilliardBall", "DiningKitchen", "ConservatoryBall",
                          "BallKitchen"]
 
-        self.htmlLayout = {"Study": [(96, 239), (138, 255)], "Hall": [(312, 482), (138, 255)],
-                           "Lounge": [(555, 698), (138, 255)], "Library": [(96, 239), (335, 486)]
-            , "Billiard Room": [(312, 482), (335, 486)], "Dining Room": [(555, 698), (335, 486)],
-                           "Conservatory": [(96, 239), (555, 685)], "Ballroom": [(312, 482), (555, 685)],
-                           "Kitchen": [(555, 698), (555, 685)]}
-        self.htmlSecretPassageLayout = {"Kitchen": [(100, 150), (143, 195)], "Conservatory": [(630, 688), (147, 210)],
-                                        "Lounge": [(105, 155), (627, 678)], "Study": [(640, 690), (633, 676)]}
-        self.htmlHallLayout = {"StudyHall": [(241, 313), (161, 223)], "HallLounge": [(482, 555), (161, 223)],
-                               "StudyLibrary": [(120, 192), (270, 334)], "HallBilliard": [(362, 433), (270, 334)],
-                               "LoungeDining": [(600, 675), (270, 334)], "LibraryBilliard": [(241, 313), (379, 445)],
-                               "BilliardDining": [(482, 555), (375, 445)],
-                               "LibraryConservatory": [(120, 192), (490, 554)],
-                               "BilliardBall": [(362, 433), (490, 554)], "DiningKitchen": [(600, 675), (490, 554)],
-                               "ConservatoryBall": [(241, 313), (600, 665)], "BallKitchen": [(482, 555), (600, 665)]}
+        self.htmlLayout = {"Study": [(423, 564), (170, 297)], "Ballroom": [(639, 805), (587, 715)],
+                            "Hall": [(642,805), (169,295)],
+                           "Lounge": [(880,1022), (169,298)], "Library": [(423,564), (369,517)], "Billiard Room": [(638,806), (367,518)], "Dining Room": [(880,1024), (368,520)],
+                           "Conservatory": [(423,563), (587,715)],
+                           "Kitchen": [(880,1024), (586,716)]}
+        self.htmlSecretPassageLayout = {"Kitchen": [(427, 479), (177, 229)], "Conservatory": [(955, 1013), (180, 242)],
+                                        "Lounge": [(430, 480), (656, 709)], "Study": [(967, 1018), (653, 704)]}
+        self.htmlHallLayout = {"StudyHall": [(566,636), (189,256)], "HallLounge": [(808,879), (191,256)],
+                               "StudyLibrary": [(466,517), (302,365)], "HallBilliard": [(688,759), (302,365)],
+                               "LoungeDining": [(927,1000), (302,365)], "LibraryBilliard": [(566,636), (410,477)],
+                               "BilliardDining": [(808,879), (410,477)],
+                               "LibraryConservatory": [(446,517), (522,583)],
+                               "BilliardBall": [(686,759), (522,583)], "DiningKitchen": [(927,1000), (522,583)],
+                               "ConservatoryBall": [(566,636), (630,697)], "BallKitchen": [(807,877), (630,696)]}
 
         # We follow the rule of "from left to right, from up to below" to give hallway their names
         # For example, the hallway between Hall and Billiary should be "HallBilliard", not "BilliardHall"

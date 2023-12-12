@@ -5,35 +5,6 @@
 {% endblock %}
 
 {% block content %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script type="text/javascript">
-            var intervalID = setInterval(update_values, 500)
-            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-            function update_values() {
-                $.getJSON($SCRIPT_ROOT + '/move',
-                function(data) {
-                    for(let i = 0; i < data[1].length; i++) {
-                        var $img = $("<img />")
-                        console.log(data[0])
-                        if(document.getElementById(data[1][i]) == undefined){
-                            $img.attr("id", data[1][i])
-                            $img.attr("src", "../static/images/" + data[0][data[1][i]].character + ".png")
-                            $img.attr("style", "height: 80px; width: 50px; transform: translate(" + data[0][data[1][i]].htmlLocal + " );")
-                            $img.attr("class", "image2")
-                            $("#parent").append($img)
-                        }
-                        else{
-                            document.getElementById(data[1][i]).style.transform = "translate("+ data[0][data[1][i]].htmlLocal +")"
-                        }
-                    }
-
-
-                  }
-                )
-            }
-        </script>    
-
-
         <!-- <div class=".col-md-9">
             <div class="parent" id="parent">
                 <img class="h-100" src="../static/images/GameBoard.png" id="board" style="height: 795; width: 795;"/>
@@ -160,13 +131,10 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="my-3 p-3 bg-body rounded shadow-lg parent" id="parent">
-                        <img src="../static/images/GameBoard.png"  id="board"/>
+                        <img class="h-100" src="../static/images/GameBoard.png"  id="board" style="height: 795; width: 795;"/>
                     </div>
                     <script>     
                         const socket = io();
-                        document.addEventListener('load', changeSID, true)
-                        function changeSID(){ 
-                            socket.emit("SID") } 
                         document.getElementById("board").addEventListener("click", getMousePos, true)
                         function getMousePos(e) {
                             var cursorX = e.pageX;
@@ -189,10 +157,10 @@
                             <tbody>
                               <tr>
                                 <td>Colonel
-                                    <input class="form-check-input" type="checkbox" id="colonel" value="Mustard">
+                                    <input class="form-check-input" type="checkbox" id="colonel" value="ColMustard">
                                 </td>  
                                 <td>Knife
-                                    <input class="form-check-input" type="checkbox" id="knife" value="Knife">
+                                    <input class="form-check-input" type="checkbox" id="knife" value="knife">
                                 </td>   
                                 <td>Hall
                                     <input class="form-check-input" type="checkbox" id="hall" value="Hall">
@@ -201,10 +169,10 @@
     
                               <tr>
                                 <td>Mr. Green
-                                    <input class="form-check-input" type="checkbox" id="green" value="Green">
+                                    <input class="form-check-input" type="checkbox" id="green" value="MrGreen">
                                 </td>
                                 <td>Candlestick
-                                    <input class="form-check-input" type="checkbox" id="candlestick" value="Candlestick">
+                                    <input class="form-check-input" type="checkbox" id="candlestick" value="candlestick">
                                 </td>  
                                 <td>Lounge
                                     <input class="form-check-input" type="checkbox" id="lounge" value="Lounge">
@@ -213,10 +181,10 @@
     
                               <tr>
                                 <td>Prof Plum
-                                    <input class="form-check-input" type="checkbox" id="plum" value="Plum">
+                                    <input class="form-check-input" type="checkbox" id="plum" value="ProfPlum">
                                 </td>
                                 <td>Revolver
-                                    <input class="form-check-input" type="checkbox" id="revolver" value="Revolver">
+                                    <input class="form-check-input" type="checkbox" id="revolver" value="revolver">
                                 </td>  
                                 <td>Dinning
                                     <input class="form-check-input" type="checkbox" id="dinning" value="Dinning">
@@ -226,10 +194,10 @@
     
                               <tr>
                                 <td>Peacock
-                                    <input class="form-check-input" type="checkbox" id="peacock" value="Peacock">
+                                    <input class="form-check-input" type="checkbox" id="peacock" value="MrsPeacock">
                                 </td>
                                 <td>Rope
-                                    <input class="form-check-input" type="checkbox" id="rope" value="Rope">
+                                    <input class="form-check-input" type="checkbox" id="rope" value="rope">
                                 </td>
                                 <td>Kitchen
                                     <input class="form-check-input" type="checkbox" id="kitchen" value="Kitchen">
@@ -238,10 +206,10 @@
     
                               <tr>
                                 <td>Scarlet
-                                    <input class="form-check-input" type="checkbox" id="scarlet" value="Scarlet">
+                                    <input class="form-check-input" type="checkbox" id="scarlet" value="MissScarlet">
                                 </td>
                                 <td>Lead Pipe
-                                    <input class="form-check-input" type="checkbox" id="leadpipe" value="Lead Pipe">
+                                    <input class="form-check-input" type="checkbox" id="leadpipe" value="lead pipe">
                                 </td>
                                 <td>Ballroom
                                     <input class="form-check-input" type="checkbox" id="ballroom" value="Ballroom">
@@ -251,10 +219,10 @@
     
                               <tr>
                                 <td>White
-                                    <input class="form-check-input" type="checkbox" id="white" value="White">
+                                    <input class="form-check-input" type="checkbox" id="white" value="MrsWhite">
                                 </td>
                                 <td>Wrench
-                                    <input class="form-check-input" type="checkbox" id="wrench" value="Wrench">
+                                    <input class="form-check-input" type="checkbox" id="wrench" value="wrench">
                                 </td>
     
                                 <td>Study
@@ -317,6 +285,35 @@
 
         <script src="path_to_socket.io_library"></script>
         <script src="path_to_toastify_library"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript">            
+            var intervalID = setInterval(update_values, 500)
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            function update_values() {
+                $.getJSON($SCRIPT_ROOT + '/move',
+                function(data) {
+                    for(let i = 0; i < data[1].length; i++) {
+                        var $img = $("<img />")
+                        if(document.getElementById(data[1][i]) == undefined){
+                            $img.attr("id", data[1][i])
+                            $img.attr("src", "../static/images/" + data[0][data[1][i]].character + ".png")
+                            $img.attr("style", "height: 80px; width: 50px; transform: translate(" + data[0][data[1][i]].htmlLocal + " );")
+                            console.log(data[0][data[1][i]].htmlLocal)
+                            $img.attr("class", "image2")
+                            $("#parent").append($img)
+                        }
+                        else{
+                            document.getElementById(data[1][i]).style.transform = "translate("+ data[0][data[1][i]].htmlLocal +")"
+                        }
+                    }
+
+
+                  }
+                )
+            }
+        </script>    
+
         <script>
 
             let suggest = {
