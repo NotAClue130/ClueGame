@@ -2,7 +2,8 @@
 Date: 10/14/2023
 GitHub Address: [NotAClue130/ClueGame](https://github.com/NotAClue130/ClueGame)
 
-![Miss Scarlet](https://github.com/NotAClue130/ClueGame/blob/main/client/static/images/MissScarlet.png)
+<img width="1165" alt="Screenshot 2024-01-05 at 12 56 50 AM" src="https://github.com/NotAClue130/ClueGame/assets/145219499/cbb758ae-8c28-4e03-8774-ef696163f42f">
+<img width="975" alt="Screenshot 2024-01-05 at 12 57 31 AM" src="https://github.com/NotAClue130/ClueGame/assets/145219499/dad21d5e-c179-4b6f-92d0-6707f9c3fbde">
 
 Introduction:
 This repository holds the Clue less project for Intro to Software Engineering in the Engineering for professionals program at Johns Hopkins University.
