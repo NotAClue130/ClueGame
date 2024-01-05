@@ -3,7 +3,7 @@ Date: 10/14/2023
 GitHub Address: https://github.com/NotAClue130/ClueGame
 
 ![image](https://github.com/NotAClue130/ClueGame/blob/main/client/static/images/Required%20Features.png)
-![image]()
+![image](https://github.com/NotAClue130/ClueGame/blob/main/client/static/images/Clue%20Game.png)
 
 
 Introduction:
