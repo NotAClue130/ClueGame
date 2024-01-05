@@ -2,6 +2,8 @@
 Date: 10/14/2023
 GitHub Address: https://github.com/NotAClue130/ClueGame
 
+![image]("https://github.com/NotAClue130/ClueGame/blob/main/client/static/images/ColMustard.png")
+
 
 Introduction:
 This repository holds the Clue less project for Intro to Software Engineering in the Engineering for professionals program at Johns Hopkins University.
