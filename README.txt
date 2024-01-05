@@ -2,7 +2,7 @@
 Date: 10/14/2023
 GitHub Address: [NotAClue130/ClueGame](https://github.com/NotAClue130/ClueGame)
 
-![Cow4](https://github.com/NotAClue130/ClueGame/raw/main/client/static/images/MrGreen.png "Cow4")
+![image](https://github.com/NotAClue130/ClueGame/raw/main/client/static/images/MrGreen.png)
 
 Introduction:
 This repository holds the Clue less project for Intro to Software Engineering in the Engineering for professionals program at Johns Hopkins University.
